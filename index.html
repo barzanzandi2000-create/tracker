@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5bea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="30-Day Tracker">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%9C%85%3C/text%3E%3C/svg%3E">
 <title>30-Day Tracker</title>
 <style>
 :root{--bg:#f5f6fa;--card:#fff;--tx:#1b2333;--mu:#69728a;--ac:#2f5bea;--ok:#22a06b;--mid:#e0a100;--bad:#d9534f;--bd:#e3e6ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -30,14 +35,14 @@ h2{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);
 .g{aspect-ratio:1;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--mu);font-size:11px;display:flex;align-items:center;justify-content:center}
 .g.cur{outline:2px solid var(--ac)}.g.l2{background:var(--ok);color:#fff;border-color:var(--ok)}.g.l1{background:var(--mid);color:#fff;border-color:var(--mid)}.g.l0{background:var(--bad);color:#fff;border-color:var(--bad)}.g.fut{opacity:.45}
 .st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.st b{display:block;font-size:20px}.st span{font-size:11px;color:var(--mu)}
-.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:13px}
+.lg{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mu);margin-top:10px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}.sw{width:14px;height:14px;border-radius:5px;border:1px solid var(--bd);display:inline-block;margin-right:6px;vertical-align:-2px}.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:13px}
 input[type=date]{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:7px;font:inherit}
 </style></head><body><div class="w">
 <h1>30-Day Tracker</h1>
 <div class="nav"><button id="pv" aria-label="Previous day">&#8249;</button><div><div class="big" id="dt"></div><div class="sub" id="dn"></div><div id="tags"></div></div><button id="nx" aria-label="Next day">&#8250;</button></div>
-<div class="sc"><div class="row"><div><div class="sub">Habits at minimum or better</div><div class="sub" id="fr"></div></div><div class="pct" id="pc">0%</div></div><div class="bar"><i id="bi"></i></div></div>
+<div class="sc"><div class="row"><div><div class="sub"><span class="sw" id="sw"></span>Habits at minimum or better</div><div class="sub" id="fr"></div></div><div class="pct" id="pc">0%</div></div><div class="bar"><i id="bi"></i></div></div>
 <div id="list"></div>
-<h2>Your 30 days</h2><div class="sc"><div class="grid" id="gr"></div></div>
+<h2>Your 30 days</h2><div class="sc"><div class="grid" id="gr"></div><div class="lg"><span><i style="background:#22a06b"></i>Sleep & body</span><span><i style="background:#2f5bea"></i>Mind & social</span><span><i style="background:#d9534f"></i>Move & study</span></div><p class="sub">Each category lights its color from 0 to 100%. White = everything done, black = nothing done. Past days you skipped show black.</p></div>
 <div class="sc"><div class="st"><div><b id="s1">0</b><span>days 80%+</span></div><div><b id="s2">0</b><span>current streak</span></div><div><b id="s3">0%</b><span>average</span></div></div></div>
 <h2>Settings</h2><div class="sc"><div class="row"><span>Day 1 is</span><input type="date" id="sd"></div><p class="sub">Study total counts K1 + K2 + K3. Friday has no study and no book/movie rule. Only habits due that day are shown. Data is saved in this browser only.</p><button class="btn" id="rs">Erase all data</button></div>
 </div>
@@ -52,11 +57,11 @@ var H=[
 {id:'WE',g:'Sleep & body',n:'Shower extras',s:'Done inside the shower',t:'tick'},
 {id:'F',g:'Sleep & body',n:'Food quality eating',s:'Your own rule',t:'tick'},
 {id:'G',g:'Sleep & body',n:'Gym',s:'Mon, Wed, Fri',t:'tick',d:[1,3,5]},
-{id:'P',g:'Mind',n:'Prayer / meditation',s:'Min 2, target 3. Third is phone-free boredom time',t:'count',min:2,tg:3,st:1,u:'x'},
-{id:'BM',g:'Mind',n:'Book or movie, 1 hour',s:'Not on Friday. Book is best last',t:'tick',nf:1},
-{id:'C1',g:'Social',n:'CH1 Talked to people',s:'Real exchanges. Min 3, target 10',t:'count',min:3,tg:10,st:1,u:''},
-{id:'C2',g:'Social',n:'CH2 Texted / called',s:'Do it on the evening walk. Min 2, target 5',t:'count',min:2,tg:5,st:1,u:''},
-{id:'C3',g:'Social',n:'CH3 Host gathering',s:'Saturday evening. Friday is prep',t:'tick',d:[6]},
+{id:'P',g:'Mind & social',n:'Prayer / meditation',s:'Min 2, target 3. Third is phone-free boredom time',t:'count',min:2,tg:3,st:1,u:'x'},
+{id:'BM',g:'Mind & social',n:'Book or movie, 1 hour',s:'Not on Friday. Book is best last',t:'tick',nf:1},
+{id:'C1',g:'Mind & social',n:'CH1 Talked to people',s:'Real exchanges. Min 3, target 10',t:'count',min:3,tg:10,st:1,u:''},
+{id:'C2',g:'Mind & social',n:'CH2 Texted / called',s:'Do it on the evening walk. Min 2, target 5',t:'count',min:2,tg:5,st:1,u:''},
+{id:'C3',g:'Mind & social',n:'CH3 Host gathering',s:'Saturday evening. Friday is prep',t:'tick',d:[6]},
 {id:'J',g:'Move & study',n:'Steps',s:'Min 8,000, target 12,000',t:'count',min:8000,tg:12000,st:1000,u:''},
 {id:'K1',g:'Move & study',n:'K1 Language (hours)',s:'Aim 3 h in two blocks',t:'count',st:.5,u:'h',nf:1,x:1},
 {id:'K2',g:'Move & study',n:'K2 University (hours)',s:'Aim 5 to 6 h, hardest first',t:'count',st:.5,u:'h',nf:1,x:1},
@@ -73,6 +78,10 @@ function rec(i){var k=ds(dayDate(i));return S.data[k]||(S.data[k]={})}
 function val(h,r){if(h.t=='sum')return(r.K1||0)+(r.K2||0)+(r.K3||0);return r[h.id]||0}
 function stat(h,r){if(h.x)return -1;var v=val(h,r);if(h.t=='tick')return v?2:0;return v>=h.tg?2:v>=h.min?1:0}
 function score(i){var d=dayDate(i).getDay(),r=rec(i),n=0,m=0,f=0;H.forEach(function(h){if(!due(h,d)||h.x)return;n++;var s=stat(h,r);if(s>=1)m++;if(s==2)f++});return{n:n,m:m,f:f}}
+var CC={'Sleep & body':{c:'#22a06b',ch:1},'Mind & social':{c:'#2f5bea',ch:2},'Move & study':{c:'#d9534f',ch:0}};
+function cr(h,r){var v=val(h,r);if(h.t=='tick')return v?1:0;return Math.min(1,v/h.tg)}
+function catPct(i){var d=dayDate(i).getDay(),r=rec(i),a={};H.forEach(function(h){if(!due(h,d)||h.x)return;var o=a[h.g]||(a[h.g]={s:0,n:0});o.s+=cr(h,r);o.n++});var p={};for(var k in CC)p[k]=a[k]?a[k].s/a[k].n:0;return p}
+function dayColor(i){var p=catPct(i),v=[0,0,0];for(var k in CC)v[CC[k].ch]=Math.round(255*p[k]);return{css:'rgb('+v.join(',')+')',lum:.3*v[0]+.59*v[1]+.11*v[2]}}
 function fmt(v,h){return h.u=='h'?v+' h':h.st==1000?v.toLocaleString():v}
 function render(){
  var d=dayDate(cur),dow=d.getDay(),r=rec(cur);
@@ -82,24 +91,24 @@ function render(){
  document.getElementById('tags').innerHTML=tg;
  var html='',lg='';
  H.forEach(function(h){
-  if(h.g!=lg){html+='<h2>'+h.g+'</h2>';lg=h.g}
+  if(h.g!=lg){html+='<h2><i style="display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;background:'+CC[h.g].c+'"></i>'+h.g+'</h2>';lg=h.g}
   if(!due(h,dow))return;
   var s=stat(h,r),cl='h'+(s>0?' s'+s:''),v=val(h,r),ctl;
   if(h.t=='tick')ctl='<button class="chk'+(v?' on':'')+'" data-t="'+h.id+'">'+(v?'&#10003;':'')+'</button>';
   else if(h.t=='sum')ctl='<b>'+v+' h</b>';
   else ctl='<div class="cnt"><button data-m="'+h.id+'">&minus;</button><output>'+fmt(v,h)+'</output><button data-p="'+h.id+'">+</button></div>';
-  html+='<div class="'+cl+'"><div class="c">'+h.id.replace('C','CH')+'</div><div class="t"><b>'+h.n+'</b><span>'+h.s+'</span></div>'+ctl+'</div>';
+  html+='<div class="'+cl+'" style="box-shadow:inset 4px 0 0 '+CC[h.g].c+'"><div class="c">'+h.id.replace('C','CH')+'</div><div class="t"><b>'+h.n+'</b><span>'+h.s+'</span></div>'+ctl+'</div>';
  });
  document.getElementById('list').innerHTML=html;
  var sc=score(cur),p=sc.n?Math.round(100*sc.m/sc.n):0;
- document.getElementById('pc').textContent=p+'%';
+ document.getElementById('pc').textContent=p+'%';document.getElementById('sw').style.background=dayColor(cur).css;
  document.getElementById('fr').textContent=sc.m+' of '+sc.n+' due. '+sc.f+' at full target';
  var bi=document.getElementById('bi');bi.style.width=p+'%';bi.style.background=p>=80?'var(--ok)':p>=50?'var(--mid)':'var(--bad)';
  var g='',t0=new Date();t0.setHours(0,0,0,0);var days=0,run=0,tot=0,cnt=0,best=0;
  for(var i=0;i<30;i++){var dd=dayDate(i),x=score(i),has=Object.keys(rec(i)).length>0,q=x.n?x.m/x.n:0,c='g';
-  if(has){c+=q>=.8?' l2':q>=.5?' l1':' l0';tot+=q;cnt++;if(q>=.8){days++;run++}else run=0;best=run}
-  else if(dd>t0)c+=' fut';
-  if(i==cur)c+=' cur';g+='<div class="'+c+'" data-j="'+i+'">'+(i+1)+'</div>'}
+  var st='';if(has){tot+=q;cnt++;if(q>=.8){days++;run++}else run=0;best=run}
+  var col=dayColor(i);if(has||dd<t0)st='background:'+col.css+';color:'+(col.lum>140?'#111':'#fff')+';border-color:'+col.css;else if(dd>t0)c+=' fut';
+  if(i==cur)c+=' cur';g+='<div class="'+c+'" style="'+st+'" data-j="'+i+'">'+(i+1)+'</div>'}
  document.getElementById('gr').innerHTML=g;
  document.getElementById('s1').textContent=days;document.getElementById('s2').textContent=best;
  document.getElementById('s3').textContent=cnt?Math.round(100*tot/cnt)+'%':'0%';
