@@ -44,7 +44,7 @@ input[type=date]{border:1px solid var(--bd);background:var(--card);color:var(--t
 <div id="list"></div>
 <h2>Your 30 days</h2><div class="sc"><div class="grid" id="gr"></div><div class="lg"><span><i style="background:#22a06b"></i>Sleep & body</span><span><i style="background:#2f5bea"></i>Mind & social</span><span><i style="background:#d9534f"></i>Move & study</span></div><p class="sub">Each category lights its color from 0 to 100%. White = everything done, black = nothing done. Past days you skipped show black.</p></div>
 <div class="sc"><div class="st"><div><b id="s1">0</b><span>days 80%+</span></div><div><b id="s2">0</b><span>current streak</span></div><div><b id="s3">0%</b><span>average</span></div></div></div>
-<h2>Settings</h2><div class="sc"><div class="row"><span>Day 1 is</span><input type="date" id="sd"></div><p class="sub">Study total counts K1 + K2 + K3. Friday has no study and no book/movie rule. Only habits due that day are shown. Data is saved in this browser only.</p><button class="btn" id="rs">Erase all data</button></div>
+<h2>Settings</h2><div class="sc"><div class="row"><span>Day 1 is</span><input type="date" id="sd"></div><p class="sub">Day 1 is the first day of each week. Study total counts K1 + K2. Day 6 of each week has no study and no book/movie rule. Only habits due that day are shown. Data is saved in this browser only.</p><button class="btn" id="rs">Erase all data</button></div>
 </div>
 <script>
 var H=[
@@ -53,39 +53,40 @@ var H=[
 {id:'B12',g:'Sleep & body',n:'Vitamin B12 + iron (Fe)',s:'B12 with breakfast daily',t:'tick',x2:{d:[2,4,6],t:'Iron with fruit today. Not near tea, coffee, dairy'}},
 {id:'W',g:'Sleep & body',n:'Shower + extras',s:'Daily. Extras done inside the shower',t:'tick'},
 {id:'F',g:'Sleep & body',n:'Food quality eating',s:'Your own rule',t:'tick'},
-{id:'G',g:'Sleep & body',n:'Gym',s:'Mon, Wed, Fri',t:'tick',d:[1,3,5]},
+{id:'G',g:'Sleep & body',n:'Gym',s:'3 times a week: days 1, 3 and 5 of each week',t:'tick',d:[0,2,4]},
+{id:'FW',g:'Sleep & body',n:'Food of the week',s:'Last day of the week. Choose next week\'s food',t:'tick',d:[6]},
+{id:'WW',g:'Sleep & body',n:'Work of the week',s:'Last day of the week. Choose next week\'s work',t:'tick',d:[6]},
 {id:'P',g:'Mind & social',n:'Prayer / meditation',s:'Min 2, target 3. Third is phone-free boredom time',t:'count',min:2,tg:3,st:1,u:'x'},
-{id:'BM',g:'Mind & social',n:'Book or movie, 1 hour',s:'Not on Friday. Book is best last',t:'tick',nf:1},
-{id:'C1',g:'Mind & social',n:'CH1 Talked to people',s:'Real exchanges. Min 3, target 10',t:'count',min:3,tg:10,st:1,u:''},
+{id:'BM',g:'Mind & social',n:'Book or movie, 1 hour',s:'Not on day 6 of the week. Book is best last',t:'tick',nf:1},
+{id:'C1',g:'Mind & social',n:'CH1 Talked to people',s:'stomech talk, accent, emotional intelligence, attention on behavior',t:'count',min:3,tg:10,st:1,u:''},
 {id:'C2',g:'Mind & social',n:'CH2 Texted / called',s:'Do it on the evening walk. Min 2, target 5',t:'count',min:2,tg:5,st:1,u:''},
-{id:'C3',g:'Mind & social',n:'CH3 Host gathering',s:'Saturday evening. Friday is prep',t:'tick',d:[6]},
-{id:'NK',g:'Move & study',n:'Morning neck exercise',s:'Right after waking',t:'tick'},
+{id:'C3',g:'Mind & social',n:'CH3 Host gathering',s:'Last day of the week, evening. Day 6 is prep',t:'tick',d:[6]},
+{id:'NK',g:'Move & study',n:'Morning neck exercise + 3× stretch',s:'Morning, evening and night full body stretch',t:'tick'},
 {id:'J',g:'Move & study',n:'Steps',s:'Min 8,000, target 12,000',t:'count',min:8000,tg:12000,st:1000,u:''},
-{id:'K1',g:'Move & study',n:'K1 Language (hours)',s:'Aim 3 h in two blocks',t:'count',st:.5,u:'h',nf:1,x:1},
-{id:'K2',g:'Move & study',n:'K2 University (hours)',s:'Aim 5 to 6 h, hardest first',t:'count',st:.5,u:'h',nf:1,x:1},
-{id:'K3',g:'Move & study',n:'K3 Flex / review (hours)',s:'Aim 1 to 3 h',t:'count',st:.5,u:'h',nf:1,x:1},
-{id:'K',g:'Move & study',n:'Study total (K1+K2+K3)',s:'Min 6, target 9. None on Friday',t:'sum',min:6,tg:9,nf:1}
+{id:'K1',g:'Move & study',n:'K1 Study (hours)',s:'Note that university class count as study hour',t:'count',st:.5,u:'h',nf:1,x:1},
+{id:'K2',g:'Move & study',n:'K2 Extra contemplating (hours)',s:'Aim 1 to 3 h',t:'count',st:.5,u:'h',nf:1,x:1},
+{id:'K',g:'Move & study',n:'Study total (K1+K2)',s:'Min 6, target 9. None on day 6 of the week',t:'sum',min:6,tg:9,nf:1}
 ];
 var S,cur=0,DN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-function ld(){try{S=JSON.parse(localStorage.getItem('t30')||'null')}catch(e){S=null}if(!S)S={start:ds(new Date()),data:{}}}
+function ld(){try{S=JSON.parse(localStorage.getItem('t30')||'null')}catch(e){S=null}if(!S)S={start:ds(new Date()),data:{},v:2};if(!S.v){for(var k in S.data){var r=S.data[k];r.K1=Math.round(((r.K1||0)+(r.K2||0))*10)/10;r.K2=r.K3||0;delete r.K3}S.v=2}}
 function sv(){try{localStorage.setItem('t30',JSON.stringify(S))}catch(e){}}
 function ds(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function dayDate(i){var p=S.start.split('-');return new Date(+p[0],+p[1]-1,+p[2]+i)}
 function due(h,dow){if(h.nf&&dow==5)return false;if(h.d&&h.d.indexOf(dow)<0)return false;return true}
 function rec(i){var k=ds(dayDate(i));return S.data[k]||(S.data[k]={})}
-function val(h,r){if(h.t=='sum')return(r.K1||0)+(r.K2||0)+(r.K3||0);return r[h.id]||0}
+function val(h,r){if(h.t=='sum')return(r.K1||0)+(r.K2||0);return r[h.id]||0}
 function stat(h,r){if(h.x)return -1;var v=val(h,r);if(h.t=='tick')return v?2:0;return v>=h.tg?2:v>=h.min?1:0}
-function score(i){var d=dayDate(i).getDay(),r=rec(i),n=0,m=0,f=0;H.forEach(function(h){if(!due(h,d)||h.x)return;n++;var s=stat(h,r);if(s>=1)m++;if(s==2)f++});return{n:n,m:m,f:f}}
+function score(i){var d=i%7,r=rec(i),n=0,m=0,f=0;H.forEach(function(h){if(!due(h,d)||h.x)return;n++;var s=stat(h,r);if(s>=1)m++;if(s==2)f++});return{n:n,m:m,f:f}}
 var CC={'Sleep & body':{c:'#22a06b',ch:1},'Mind & social':{c:'#2f5bea',ch:2},'Move & study':{c:'#d9534f',ch:0}};
 function cr(h,r){var v=val(h,r);if(h.t=='tick')return v?1:0;return Math.min(1,v/h.tg)}
-function catPct(i){var d=dayDate(i).getDay(),r=rec(i),a={};H.forEach(function(h){if(!due(h,d)||h.x)return;var o=a[h.g]||(a[h.g]={s:0,n:0});o.s+=cr(h,r);o.n++});var p={};for(var k in CC)p[k]=a[k]?a[k].s/a[k].n:0;return p}
+function catPct(i){var d=i%7,r=rec(i),a={};H.forEach(function(h){if(!due(h,d)||h.x)return;var o=a[h.g]||(a[h.g]={s:0,n:0});o.s+=cr(h,r);o.n++});var p={};for(var k in CC)p[k]=a[k]?a[k].s/a[k].n:0;return p}
 function dayColor(i){var p=catPct(i),v=[0,0,0];for(var k in CC)v[CC[k].ch]=Math.round(255*p[k]);return{css:'rgb('+v.join(',')+')',lum:.3*v[0]+.59*v[1]+.11*v[2]}}
 function fmt(v,h){return h.u=='h'?v+' h':h.st==1000?v.toLocaleString():v}
 function render(){
- var d=dayDate(cur),dow=d.getDay(),r=rec(cur);
- document.getElementById('dt').textContent='Day '+(cur+1)+' of 30';
- document.getElementById('dn').textContent=DN[dow]+', '+d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
- var tg='';if(dow==5)tg+='<span class="tag">NO STUDY</span>';[['G','GYM'],['C3','GATHERING']].forEach(function(x){var h=find(x[0]);if(due(h,dow)&&h.d)tg+='<span class="tag">'+x[1]+'</span>'});if(find('B12').x2.d.indexOf(dow)>=0)tg+='<span class="tag">IRON</span>';
+ var d=dayDate(cur),dow=cur%7,r=rec(cur);
+ document.getElementById('dt').textContent='Day '+(cur+1)+' of 30 · Week '+(Math.floor(cur/7)+1);
+ document.getElementById('dn').textContent=DN[d.getDay()]+', '+d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+ var tg='';if(dow==5)tg+='<span class="tag">NO STUDY</span>';[['G','GYM'],['C3','GATHERING'],['FW','WEEK PICKS']].forEach(function(x){var h=find(x[0]);if(due(h,dow)&&h.d)tg+='<span class="tag">'+x[1]+'</span>'});if(find('B12').x2.d.indexOf(dow)>=0)tg+='<span class="tag">IRON</span>';
  document.getElementById('tags').innerHTML=tg;
  var html='',lg='';
  H.forEach(function(h){
@@ -120,7 +121,7 @@ document.addEventListener('click',function(e){
  else if(b.dataset.m){id=b.dataset.m;r[id]=Math.max(0,Math.round(((r[id]||0)-find(id).st)*10)/10)}
  else if(b.dataset.j!==undefined){cur=+b.dataset.j}
  else if(b.id=='pv'){cur=Math.max(0,cur-1)}else if(b.id=='nx'){cur=Math.min(29,cur+1)}
- else if(b.id=='rs'){if(b.dataset.a){S={start:ds(new Date()),data:{}};cur=0;b.textContent='Erase all data';delete b.dataset.a}else{b.dataset.a=1;b.textContent='Tap again to confirm';return}}
+ else if(b.id=='rs'){if(b.dataset.a){S={start:ds(new Date()),data:{},v:2};cur=0;b.textContent='Erase all data';delete b.dataset.a}else{b.dataset.a=1;b.textContent='Tap again to confirm';return}}
  else return;
  sv();render();
 });
